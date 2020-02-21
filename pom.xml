@@ -8,12 +8,24 @@
     <artifactId>telegrambot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <telegrambots.version>4.6</telegrambots.version>
+        <spring.context.version>5.2.3.RELEASE</spring.context.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
-            <version>4.6</version>
+            <version>${telegrambots.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.context.version}</version>
+        </dependency>
+
 
     </dependencies>
 </project>
