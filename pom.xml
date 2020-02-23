@@ -11,21 +11,45 @@
     <properties>
         <telegrambots.version>4.6</telegrambots.version>
         <spring.context.version>5.2.3.RELEASE</spring.context.version>
+
+        <slf4j.version>1.7.30</slf4j.version>
+
+        <apache.commons.version>3.9</apache.commons.version>
     </properties>
 
     <dependencies>
+        <!--TELEGRAM-->
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
             <version>${telegrambots.version}</version>
         </dependency>
 
+        <!--SPRING-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.context.version}</version>
         </dependency>
 
+        <!--LOGGER-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!--APACHE-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.version}</version>
+        </dependency>
 
     </dependencies>
 

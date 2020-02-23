@@ -1,4 +1,4 @@
-package com.hairizma.local;
+package com.hairizma.internationalisation;
 
 import org.springframework.stereotype.Component;
 

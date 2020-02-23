@@ -1,6 +1,7 @@
 package com.hairizma;
 
 import com.hairizma.bot.MainBot;
+import org.apache.log4j.PropertyConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.telegram.telegrambots.ApiContextInitializer;
@@ -24,6 +25,8 @@ public class Application {
         ApiContextInitializer.init();
         applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         telegramBotsApi = new TelegramBotsApi();
+        PropertyConfigurator.configure(
+                Application.class.getClassLoader().getResourceAsStream("log4j-default.properties"));
     }
 
     private static void registerBot(LongPollingBot bot) {
