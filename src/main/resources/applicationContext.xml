@@ -18,4 +18,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         </property>
     </bean>
 
+    <bean class="org.telegram.telegrambots.meta.TelegramBotsApi"/>
+    <bean class="com.hairizma.bot.BotsRegistrator" autowire="constructor"/>
+
 </beans>
