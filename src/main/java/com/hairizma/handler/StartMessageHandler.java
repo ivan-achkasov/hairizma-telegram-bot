@@ -1,20 +1,17 @@
 package com.hairizma.handler;
 
+import com.hairizma.bot.MainBot;
 import com.hairizma.bot.MessagesSender;
+import com.hairizma.handler.mapping.MessageTextMapping;
 import com.hairizma.internationalisation.Message;
 import com.hairizma.internationalisation.MessagesResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Component
+@Handler(MainBot.class)
+@MessageTextMapping("/start")
 public class StartMessageHandler implements UpdateHandler {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(StartMessageHandler.class);
