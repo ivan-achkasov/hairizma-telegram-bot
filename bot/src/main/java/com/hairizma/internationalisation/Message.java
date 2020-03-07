@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public enum Message {
     COMMON_ERROR_DEFAULT("common.error.default"),
+    COMMON_NOT_RECOGNIZED_MESSAGE("common.message.not_recognized"),
     START_WELCOME("start.welcome");
 
     private final String code;

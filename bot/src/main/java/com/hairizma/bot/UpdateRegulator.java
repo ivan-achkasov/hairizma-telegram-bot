@@ -1,10 +1,9 @@
 package com.hairizma.bot;
 
+import com.hairizma.handler.UpdateHandler;
 import com.hairizma.exception.DefaultExceptionResolver;
 import com.hairizma.exception.ExceptionResolver;
 import com.hairizma.handler.Handler;
-import com.hairizma.handler.StartMessageHandler;
-import com.hairizma.handler.UpdateHandler;
 import com.hairizma.handler.mapping.Mapper;
 import com.hairizma.handler.mapping.MessageTextMapper;
 import com.hairizma.handler.mapping.MessageTextMapping;
