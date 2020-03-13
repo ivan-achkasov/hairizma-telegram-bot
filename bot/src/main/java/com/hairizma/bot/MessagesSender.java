@@ -14,10 +14,7 @@ public class MessagesSender {
     }
 
     public Message sendText(final long chatId, final String text) throws TelegramApiException {
-        final SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(text);
-        return send(sendMessage);
+        return send(new SendMessage(chatId, text));
     }
 
     public Message send(final SendMessage sendObject) throws TelegramApiException {
