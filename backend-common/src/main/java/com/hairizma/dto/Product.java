@@ -1,9 +1,18 @@
 package com.hairizma.dto;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "product")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Product {
 
+    @XmlElement(name = "id")
     private int id;
     private String name;
+    @XmlElement(name = "description")
     private String description;
     private byte[] image;
 

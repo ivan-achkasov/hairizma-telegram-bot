@@ -16,6 +16,24 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.hairizma</groupId>
+            <artifactId>backend-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--CXF-->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
         <!--TELEGRAM-->
         <dependency>
             <groupId>org.telegram</groupId>

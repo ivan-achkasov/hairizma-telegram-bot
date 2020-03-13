@@ -10,7 +10,7 @@ public class Application {
     public static void main(String[] args) {
         ApiContextInitializer.init();
 
-        new ClassPathXmlApplicationContext("applicationContext.xml");
+        new ClassPathXmlApplicationContext("application-context.xml");
 
         PropertyConfigurator.configure(Application.class.getClassLoader().getResourceAsStream("log4j-default.properties"));
     }

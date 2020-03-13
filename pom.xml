@@ -21,7 +21,9 @@
 
         <apache.commons.version>3.9</apache.commons.version>
 
-        <jackson.version>2.10.2</jackson.version>
+        <cxf.version>3.3.5</cxf.version>
+
+        <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
     </properties>
 
     <dependencies>
