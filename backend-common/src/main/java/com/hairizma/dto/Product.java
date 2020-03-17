@@ -11,10 +11,12 @@ public class Product {
 
     @XmlElement(name = "id")
     private int id;
+    @XmlElement(name = "name")
     private String name;
     @XmlElement(name = "description")
     private String description;
-    private byte[] image;
+    @XmlElement(name = "imageId")
+    private long imageId;
 
     public int getId() {
         return id;
@@ -40,11 +42,11 @@ public class Product {
         this.description = description;
     }
 
-    public byte[] getImage() {
-        return image;
+    public long getImageId() {
+        return imageId;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 }

@@ -1,5 +1,6 @@
 package com.hairizma.exception;
 
+import com.hairizma.bot.BotUtils;
 import com.hairizma.bot.MessagesSender;
 import com.hairizma.internationalisation.Message;
 import com.hairizma.internationalisation.MessagesResolver;
@@ -23,7 +24,7 @@ public class DefaultExceptionResolver implements ExceptionResolver {
 
     @Override
     public void resolve(final Exception e, final Update update, final MessagesSender messagesSender) {
-        final long chatId = update.getMessage().getChatId();
+        final long chatId = BotUtils.getChatId(update);
         try {
             messagesSender.sendText(chatId, messagesResolver.getMessage(chatId, Message.COMMON_ERROR_DEFAULT));
             LOGGER.error("Exception occurred. Default error message has been sent to the user {}. Exception:",
