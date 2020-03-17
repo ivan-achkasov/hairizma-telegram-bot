@@ -5,17 +5,11 @@ import com.hairizma.exception.DefaultExceptionResolver;
 import com.hairizma.exception.ExceptionResolver;
 import com.hairizma.handler.Handler;
 import com.hairizma.handler.mapping.Mapper;
-import com.hairizma.handler.mapping.MessageTextMapper;
-import com.hairizma.handler.mapping.MessageTextMapping;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class UpdateRegulator {
@@ -23,13 +17,16 @@ public class UpdateRegulator {
     private final List<UpdateHandler> updateHandlers;
     private final Collection<ExceptionResolver> exceptionResolvers;
     private final DefaultExceptionResolver defaultExceptionResolver;
+    private final List<Mapper<?>> mappers;
 
     public UpdateRegulator(final List<UpdateHandler> updateHandlers,
-                          final Collection<ExceptionResolver> exceptionResolvers,
-                          final DefaultExceptionResolver defaultExceptionResolver) {
+                           final Collection<ExceptionResolver> exceptionResolvers,
+                           final DefaultExceptionResolver defaultExceptionResolver,
+                           final List<Mapper<?>> mappers) {
         this.updateHandlers = updateHandlers;
         this.exceptionResolvers = exceptionResolvers;
         this.defaultExceptionResolver = defaultExceptionResolver;
+        this.mappers = mappers;
     }
 
     public void resolve(final Class botIdentifier, final Update update, final MessagesSender messagesSender) {
@@ -65,35 +62,28 @@ public class UpdateRegulator {
     }
 
     private boolean isMappingSatisfied(final Update update, final UpdateHandler updateHandler) {
-        final Collection<Mapper> mappers = getMappers(updateHandler);
+        final Annotation[] annotations = updateHandler.getClass().getAnnotations();
+        if (annotations.length < 1) {
+            return false;
+        }
 
-        for(Mapper mapper : mappers) {
-            if (mapper.satisfied(update)){
-                return  true;
+        for (Annotation annotation : annotations) {
+            for (Mapper<? extends Annotation> mapper : this.mappers) {
+                if(isMappingSatisfied(update, mapper, annotation)) {
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    private Collection<Mapper> getMappers(final UpdateHandler updateHandler) {
-        final Annotation[] annotations = updateHandler.getClass().getAnnotations();
-        if (annotations.length < 1) {
-            return Collections.emptySet();
+    private <T extends Annotation> boolean isMappingSatisfied(final Update update,
+                                                              final Mapper<T> mapper,
+                                                              final Annotation annotation) {
+        if(!mapper.getAnnotationClass().isInstance(annotation)){
+            return false;
         }
-
-        final Set<Mapper> mappers = new HashSet<>();
-
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof MessageTextMapping) {
-                final MessageTextMapping mappingAnnotation = (MessageTextMapping) annotation;
-
-                for (final String text : mappingAnnotation.value()) {
-                    mappers.add(new MessageTextMapper(text));
-                }
-            }
-        }
-
-        return mappers;
+       return mapper.satisfied(update, (T)annotation);
     }
 }

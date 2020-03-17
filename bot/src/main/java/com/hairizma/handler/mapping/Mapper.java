@@ -2,8 +2,12 @@ package com.hairizma.handler.mapping;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public interface Mapper {
+import java.lang.annotation.Annotation;
 
-	boolean satisfied(Update update);
+public interface Mapper<T extends Annotation> {
+
+	boolean satisfied(final Update update, T annotation);
+
+	Class<T> getAnnotationClass();
 
 }
