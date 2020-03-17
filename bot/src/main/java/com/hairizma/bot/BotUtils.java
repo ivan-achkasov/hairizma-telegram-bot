@@ -1,6 +1,7 @@
 package com.hairizma.bot;
 
 import org.apache.commons.lang3.StringUtils;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.text.MessageFormat;
@@ -15,8 +16,13 @@ public class BotUtils {
             return DEFAULT_CHAT_ID;
         }
 
-        if(update.hasMessage()) {
-            return update.getMessage().getChatId();
+        Message message = update.getMessage();
+        if(message == null) {
+            message = update.getCallbackQuery().getMessage();
+        }
+
+        if(message != null) {
+            return message.getChatId();
         }
 
         return DEFAULT_CHAT_ID;
