@@ -36,13 +36,13 @@ public class CatalogHandler implements UpdateHandler{
         final List<Product> products = productService.getProducts();
         for (Product product : products) {
             final SendMessage sendMessage = new SendMessage(chatId, generateMessage(product));
-            sendMessage.setReplyMarkup(getButtons());
+            sendMessage.setReplyMarkup(getButtons(product));
             sendMessage.setParseMode("Markdown");
             messagesSender.send(sendMessage);
         }
     }
 
-    private ReplyKeyboard getButtons(){
+    private ReplyKeyboard getButtons(final Product product){
         final InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
 
         final List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
@@ -51,7 +51,9 @@ public class CatalogHandler implements UpdateHandler{
         final List<InlineKeyboardButton> firstLine = new ArrayList<>();
         buttons.add(firstLine);
 
-        firstLine.add(new InlineKeyboardButton().setText("Добавить в корзину").setCallbackData("17"));
+        firstLine.add(new InlineKeyboardButton()
+                .setText("Добавить в корзину")
+                .setCallbackData("addProductToCart:" + product.getId()));
 
         return markupKeyboard;
     }
