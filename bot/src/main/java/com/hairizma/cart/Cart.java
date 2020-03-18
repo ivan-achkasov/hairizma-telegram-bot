@@ -32,4 +32,8 @@ public class Cart {
     public synchronized void clear() {
         productsCount.clear();
     }
+
+    public synchronized boolean addProduct(int productId) {
+        return productsCount.putIfAbsent(productId, 0 ) == null;
+    }
 }

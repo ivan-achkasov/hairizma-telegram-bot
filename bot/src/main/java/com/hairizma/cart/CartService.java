@@ -22,4 +22,8 @@ public class CartService {
     public void popProduct(final long chatId, final int productId) {
         getCart(chatId).popProduct(productId);
     }
+
+    public boolean addProduct(final long chatId, final int productId) {
+        return getCart(chatId).addProduct(productId);
+    }
 }

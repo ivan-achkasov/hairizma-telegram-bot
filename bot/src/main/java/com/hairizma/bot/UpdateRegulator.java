@@ -29,7 +29,7 @@ public class UpdateRegulator {
         this.mappers = mappers;
     }
 
-    public void resolve(final Class botIdentifier, final Update update, final MessagesSender messagesSender) {
+    public void resolve(final Class<?> botIdentifier, final Update update, final MessagesSender messagesSender) {
         if(botIdentifier == null || update == null) {
             return;
         }
@@ -53,7 +53,7 @@ public class UpdateRegulator {
         return defaultExceptionResolver;
     }
 
-    private Class getBotIdentifier(final UpdateHandler updateHandler) {
+    private Class<?> getBotIdentifier(final UpdateHandler updateHandler) {
         final Handler[] annotations = updateHandler.getClass().getAnnotationsByType(Handler.class);
         if(annotations.length > 0) {
             return annotations[0].value();
