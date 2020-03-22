@@ -1,8 +1,11 @@
 package com.hairizma.bot;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -22,16 +25,31 @@ public class MessagesSender {
         return sender.execute(sendObject);
     }
 
-    public Boolean sendCallbackAnswerAlert(final String callbackId, final String text) throws TelegramApiException {
-        return send(new AnswerCallbackQuery().setCallbackQueryId(callbackId).setText(text).setShowAlert(true));
+    public boolean sendCallbackAnswerAlert(final String callbackId, final String text) throws TelegramApiException {
+        return ObjectUtils.defaultIfNull(
+                send(new AnswerCallbackQuery().setCallbackQueryId(callbackId).setText(text).setShowAlert(true)),
+                false);
     }
 
-    public Boolean sendCallbackAnswerPopup(final String callbackId, final String text) throws TelegramApiException {
-        return send(new AnswerCallbackQuery().setCallbackQueryId(callbackId).setText(text));
+    public boolean sendCallbackAnswerPopup(final String callbackId, final String text) throws TelegramApiException {
+        return ObjectUtils.defaultIfNull(
+                send(new AnswerCallbackQuery().setCallbackQueryId(callbackId).setText(text)),
+                false);
     }
 
-    public Boolean send(final AnswerCallbackQuery answerCallbackQuery) throws TelegramApiException {
-        return sender.execute(answerCallbackQuery);
+    public boolean send(final AnswerCallbackQuery answerCallbackQuery) throws TelegramApiException {
+        return ObjectUtils.defaultIfNull(
+                sender.execute(answerCallbackQuery),
+                false);
     }
 
+    public boolean deleteMessage(final long chatId, int messageId) throws TelegramApiException {
+        return ObjectUtils.defaultIfNull(
+                sender.execute(new DeleteMessage(chatId, messageId)),
+                false);
+    }
+
+    public void edit(final EditMessageText editMessage) throws TelegramApiException {
+        sender.execute(editMessage);
+    }
 }
