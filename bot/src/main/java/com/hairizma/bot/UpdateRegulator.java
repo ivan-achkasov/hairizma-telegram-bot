@@ -29,18 +29,18 @@ public class UpdateRegulator {
         this.mappers = mappers;
     }
 
-    public void resolve(final Class<?> botIdentifier, final Update update, final MessagesSender messagesSender) {
+    public void resolve(final Class<?> botIdentifier, final Update update, final MessagesManager messagesManager) {
         if(botIdentifier == null || update == null) {
             return;
         }
         try {
             for (UpdateHandler updateHandler : updateHandlers) {
                 if(botIdentifier.equals(getBotIdentifier(updateHandler)) && isMappingSatisfied(update, updateHandler)) {
-                    updateHandler.handleUpdate(update, messagesSender);
+                    updateHandler.handleUpdate(update, messagesManager);
                 }
             }
         } catch (final Exception e) {
-            getExceptionResolver(e, update).resolve(e, update, messagesSender);
+            getExceptionResolver(e, update).resolve(e, update, messagesManager);
         }
     }
 

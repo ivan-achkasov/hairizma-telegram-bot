@@ -14,16 +14,16 @@ public class MainBot extends TelegramLongPollingBot {
 
     private final UpdateRegulator updateRegulator;
 
-    private final MessagesSender messagesSender;
+    private final MessagesManager messagesManager;
 
     public MainBot(final UpdateRegulator updateRegulator) {
         this.updateRegulator = updateRegulator;
-        this.messagesSender = new MessagesSender(this);
+        this.messagesManager = new MessagesManager(this);
     }
 
     @Override
     public void onUpdateReceived(final Update update) {
-        updateRegulator.resolve(MainBot.class, update, messagesSender);
+        updateRegulator.resolve(MainBot.class, update, messagesManager);
     }
 
     public String getBotUsername() {

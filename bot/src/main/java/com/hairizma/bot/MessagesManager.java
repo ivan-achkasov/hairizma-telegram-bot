@@ -9,11 +9,11 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class MessagesSender {
+public class MessagesManager {
 
     private final DefaultAbsSender sender;
 
-    public MessagesSender(final DefaultAbsSender sender) {
+    public MessagesManager(final DefaultAbsSender sender) {
         this.sender = sender;
     }
 

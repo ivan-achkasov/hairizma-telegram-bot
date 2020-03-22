@@ -1,6 +1,6 @@
 package com.hairizma.handler;
 
-import com.hairizma.bot.MessagesSender;
+import com.hairizma.bot.MessagesManager;
 import com.hairizma.internationalisation.Message;
 import com.hairizma.internationalisation.MessagesResolver;
 import org.springframework.stereotype.Component;
@@ -16,8 +16,8 @@ public class MessageNotRecognizedHandler implements UpdateHandler {
     }
 
     @Override
-    public void handleUpdate(final Update update, final MessagesSender messagesSender) throws Exception {
+    public void handleUpdate(final Update update, final MessagesManager messagesManager) throws Exception {
         final long chatId = update.getMessage().getChatId();
-        messagesSender.sendText(chatId, messagesResolver.getMessage(chatId, Message.COMMON_NOT_RECOGNIZED_MESSAGE));
+        messagesManager.sendText(chatId, messagesResolver.getMessage(chatId, Message.COMMON_NOT_RECOGNIZED_MESSAGE));
     }
 }

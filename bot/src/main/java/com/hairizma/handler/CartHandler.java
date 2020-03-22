@@ -2,7 +2,7 @@ package com.hairizma.handler;
 
 import com.hairizma.bot.BotUtils;
 import com.hairizma.bot.MainBot;
-import com.hairizma.bot.MessagesSender;
+import com.hairizma.bot.MessagesManager;
 import com.hairizma.dto.Product;
 import com.hairizma.service.ProductService;
 import com.hairizma.service.cart.Cart;
@@ -54,53 +54,53 @@ public class CartHandler implements UpdateHandler {
     }
 
     @Override
-    public void handleUpdate(Update update, MessagesSender messagesSender) throws Exception {
+    public void handleUpdate(Update update, MessagesManager messagesManager) throws Exception {
         if(update.hasMessage()) {
-            processMessage(update.getMessage(), messagesSender);
+            processMessage(update.getMessage(), messagesManager);
         } else if (update.hasCallbackQuery()) {
-            processCallbackQuery(update.getCallbackQuery(), messagesSender);
+            processCallbackQuery(update.getCallbackQuery(), messagesManager);
         }
     }
 
-    private void processMessage(final Message message, final MessagesSender messagesSender) throws TelegramApiException {
+    private void processMessage(final Message message, final MessagesManager messagesManager) throws TelegramApiException {
         final String messageText = message.getText();
         if(OPEN_CART_QUERY.equals(messageText)) {
-            openCart(message.getChatId(), messagesSender);
+            openCart(message.getChatId(), messagesManager);
         }
     }
 
-    private void processCallbackQuery(final CallbackQuery callbackQuery, final MessagesSender messagesSender) throws TelegramApiException {
+    private void processCallbackQuery(final CallbackQuery callbackQuery, final MessagesManager messagesManager) throws TelegramApiException {
         final long chatId = callbackQuery.getMessage().getChatId();
         final String callbackData = callbackQuery.getData();
         int productId;
         if(callbackData.startsWith(ADD_TO_CART_CALLBACK_PREFIX)) {
             productId = getProductId(callbackData, ADD_TO_CART_CALLBACK_PREFIX);
-            addToCart(chatId, callbackQuery.getId(), productId, messagesSender);
+            addToCart(chatId, callbackQuery.getId(), productId, messagesManager);
         } else if (callbackData.startsWith(PUSH_TO_CART_CALLBACK_PREFIX)) {
             productId = getProductId(callbackData, PUSH_TO_CART_CALLBACK_PREFIX);
             changeProductCountInCart(
                     chatId, callbackQuery.getId(), productId,
                     callbackQuery.getMessage().getMessageId(),
-                    cartService::pushProduct, messagesSender);
+                    cartService::pushProduct, messagesManager);
         } else if (callbackData.startsWith(POP_FROM_CART_CALLBACK_PREFIX)) {
             productId = getProductId(callbackData, POP_FROM_CART_CALLBACK_PREFIX);
             changeProductCountInCart(
                     chatId, callbackQuery.getId(), productId,
                     callbackQuery.getMessage().getMessageId(),
-                    cartService::popProduct, messagesSender);
+                    cartService::popProduct, messagesManager);
         } else if (callbackData.startsWith(REMOVE_FROM_CART_CALLBACK_PREFIX)) {
             productId = getProductId(callbackData, REMOVE_FROM_CART_CALLBACK_PREFIX);;
             changeProductCountInCart(
                     chatId, callbackQuery.getId(), productId,
                     callbackQuery.getMessage().getMessageId(),
-                    (c, p) -> {cartService.removeProduct(c, p); return 0;}, messagesSender);
+                    (c, p) -> {cartService.removeProduct(c, p); return 0;}, messagesManager);
         }
     }
 
-    private void openCart(final long chatId, final MessagesSender messagesSender) throws TelegramApiException {
+    private void openCart(final long chatId, final MessagesManager messagesManager) throws TelegramApiException {
         final Cart cart = cartService.getCart(chatId);
         if(cart.isEmpty()) {
-            messagesSender.sendText(chatId, "Корзина пуста. Выберите хотябы один товар.");
+            messagesManager.sendText(chatId, "Корзина пуста. Выберите хотябы один товар.");
             return;
         }
         final Map<Integer, Integer> productsCount = cart.getProductsCount();
@@ -112,7 +112,7 @@ public class CartHandler implements UpdateHandler {
             final SendMessage sendMessage = new SendMessage(chatId, messageText)
                     .setParseMode("Markdown")
                     .setReplyMarkup(buttons);
-            messagesSender.send(sendMessage);
+            messagesManager.send(sendMessage);
         }
     }
 
@@ -154,19 +154,19 @@ public class CartHandler implements UpdateHandler {
         return markupKeyboard;
     }
 
-    private void addToCart(final long chatId, final String callbackQueryId, final int productId, final MessagesSender messagesSender) throws TelegramApiException {
+    private void addToCart(final long chatId, final String callbackQueryId, final int productId, final MessagesManager messagesManager) throws TelegramApiException {
         final String message;
         if(cartService.addProduct(chatId, productId)) {
             message =  "Товар добавлен.";
         } else {
             message = "Товар уже был добавлен.";
         }
-        messagesSender.sendCallbackAnswerPopup(callbackQueryId, message);
+        messagesManager.sendCallbackAnswerPopup(callbackQueryId, message);
     }
 
     private void changeProductCountInCart(final long chatId, final String callbackQueryId, final int productId,
                                           final int messageId, final BiFunction<Long, Integer, Integer> cartFunction,
-                                          final MessagesSender messagesSender) throws TelegramApiException {
+                                          final MessagesManager messagesManager) throws TelegramApiException {
         final Product product = productService.get(productId);
         final int newCount = cartFunction.apply(chatId, productId);
         final String message;
@@ -178,15 +178,15 @@ public class CartHandler implements UpdateHandler {
                     .setParseMode("Markdown")
                     .setText(generateCartItemInfo(product, newCount))
                     .setReplyMarkup(getButtonsForCartView(product, newCount));
-            messagesSender.edit(editMessageText);
+            messagesManager.edit(editMessageText);
         } else {
             message = "Товар удален из корзины";
-            messagesSender.deleteMessage(chatId, messageId);
+            messagesManager.deleteMessage(chatId, messageId);
             if(cartService.getCart(chatId).isEmpty()) {
-                messagesSender.sendText(chatId, "Корзина пуста");
+                messagesManager.sendText(chatId, "Корзина пуста");
             }
         }
-        messagesSender.sendCallbackAnswerPopup(callbackQueryId, message);
+        messagesManager.sendCallbackAnswerPopup(callbackQueryId, message);
     }
 
     private int getProductId(final String callbackData, final String prefixToRemove) {

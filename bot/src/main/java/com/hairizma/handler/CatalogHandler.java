@@ -2,7 +2,7 @@ package com.hairizma.handler;
 
 import com.hairizma.bot.BotUtils;
 import com.hairizma.bot.MainBot;
-import com.hairizma.bot.MessagesSender;
+import com.hairizma.bot.MessagesManager;
 import com.hairizma.dto.Product;
 import com.hairizma.handler.mapping.MessageTextMapping;
 import com.hairizma.service.ProductService;
@@ -31,14 +31,14 @@ public class CatalogHandler implements UpdateHandler{
     }
 
     @Override
-    public void handleUpdate(final Update update, final MessagesSender messagesSender) throws Exception {
+    public void handleUpdate(final Update update, final MessagesManager messagesManager) throws Exception {
         final long chatId = BotUtils.getChatId(update);
         final List<Product> products = productService.getProducts();
         for (Product product : products) {
             final SendMessage sendMessage = new SendMessage(chatId, generateMessage(product));
             sendMessage.setReplyMarkup(getButtons(product));
             sendMessage.setParseMode("Markdown");
-            messagesSender.send(sendMessage);
+            messagesManager.send(sendMessage);
         }
     }
 
