@@ -21,7 +21,12 @@ public class CallbackQueryValueMapper implements Mapper<CallbackQueryValueMappin
             return false;
         }
 
-        return Pattern.compile(annotation.value()[0]).matcher(value).matches();
+        for(String pattern : annotation.value()) {
+            if(Pattern.compile(pattern).matcher(value).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
