@@ -52,9 +52,13 @@ public class StartMessageHandler implements UpdateHandler {
 
 
         final KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(new KeyboardButton("Каталог"));
-        keyboardFirstRow.add(new KeyboardButton("Помощь"));
         keyboard.add(keyboardFirstRow);
+        keyboardFirstRow.add(new KeyboardButton("Каталог"));
+        keyboardFirstRow.add(new KeyboardButton("Контакты"));
+
+        final KeyboardRow keyboardSecondRow = new KeyboardRow();
+        keyboard.add(keyboardSecondRow);
+        keyboardSecondRow.add(new KeyboardButton("Открыть корзину"));
 
         return replyKeyboardMarkup;
     }
