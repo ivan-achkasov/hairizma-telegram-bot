@@ -53,7 +53,7 @@ public class CatalogHandler implements UpdateHandler{
 
         firstLine.add(new InlineKeyboardButton()
                 .setText("Добавить в корзину")
-                .setCallbackData("addProductToCart:" + product.getId()));
+                .setCallbackData(CartHandler.ADD_TO_CART_CALLBACK_PREFIX + product.getId()));
 
         return markupKeyboard;
     }

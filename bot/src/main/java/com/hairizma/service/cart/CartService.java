@@ -1,4 +1,4 @@
-package com.hairizma.cart;
+package com.hairizma.service.cart;
 
 import org.springframework.stereotype.Service;
 
@@ -15,15 +15,19 @@ public class CartService {
         return carts.get(chatId);
     }
 
-    public void pushProduct(final long chatId, final int productId) {
-        getCart(chatId).pushProduct(productId);
+    public int pushProduct(final long chatId, final int productId) {
+        return getCart(chatId).pushProduct(productId);
     }
 
-    public void popProduct(final long chatId, final int productId) {
-        getCart(chatId).popProduct(productId);
+    public int popProduct(final long chatId, final int productId) {
+        return getCart(chatId).popProduct(productId);
     }
 
     public boolean addProduct(final long chatId, final int productId) {
         return getCart(chatId).addProduct(productId);
+    }
+
+    public void removeProduct(final long chatId, final int productId) {
+        getCart(chatId).removeProduct(productId);
     }
 }
