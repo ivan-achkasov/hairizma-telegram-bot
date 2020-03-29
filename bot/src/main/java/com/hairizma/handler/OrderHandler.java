@@ -9,7 +9,6 @@ import com.hairizma.service.cart.CartService;
 import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -39,7 +38,7 @@ public class OrderHandler implements UpdateHandler {
         }
     }
 
-    private void handleMessage(final Message message, final MessagesManager messagesManager) throws TelegramApiException {
+    private void handleMessage(final Message message, final MessagesManager messagesManager) {
         final String messageText = message.getText();
         final long chatId = message.getChatId();
         if(PLACE_ORDER_QUERY.equals(messageText)) {
@@ -51,40 +50,22 @@ public class OrderHandler implements UpdateHandler {
         }
     }
 
-    private void checkCustomerData(final long chatId, final MessagesManager messagesManager) throws TelegramApiException {
+    private void checkCustomerData(final long chatId, final MessagesManager messagesManager) {
         final CustomerDeliveryInfo deliveryInfo = customerService.getOrCreateCustomerInfo(chatId);
 
         checkCustomerData(chatId, messagesManager, deliveryInfo);
     }
 
-    private void checkCustomerData(final long chatId, final MessagesManager messagesManager, final CustomerDeliveryInfo deliveryInfo) throws TelegramApiException {
+    private void checkCustomerData(final long chatId, final MessagesManager messagesManager, final CustomerDeliveryInfo deliveryInfo) {
         if (StringUtils.isBlank(deliveryInfo.getName())) {
             messagesManager.sendText(chatId, "Введите ваше имя:");
-            handlerManager.fixHandleConsumer(chatId, (m, mm) -> {
-                try {
-                    this.updateName(m, mm);
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            handlerManager.fixHandleConsumer(chatId, this::updateName);
         } else if (StringUtils.isBlank(deliveryInfo.getPhone())) {
             messagesManager.sendText(chatId, "Введите ваш номер телефона:");
-            handlerManager.fixHandleConsumer(chatId, (m, mm) -> {
-                try {
-                    this.updatePhone(m, mm);
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            handlerManager.fixHandleConsumer(chatId, this::updatePhone);
         } else if (StringUtils.isBlank(deliveryInfo.getDeliveryAddress())) {
             messagesManager.sendText(chatId, "Введите город и отделение новой почты:");
-            handlerManager.fixHandleConsumer(chatId, (m, mm) -> {
-                try {
-                    this.updateDeliveryAddress(m, mm);
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            handlerManager.fixHandleConsumer(chatId, this::updateDeliveryAddress);
         } else {
             cartService.getCart(chatId).clear();
             messagesManager.sendText(chatId, "Спасибо! Ваш заказ обрабатывается.");
@@ -92,7 +73,7 @@ public class OrderHandler implements UpdateHandler {
     }
 
     private void updateField(final Message message, final MessagesManager messagesManager,
-                             final Consumer<CustomerDeliveryInfo> update) throws TelegramApiException {
+                             final Consumer<CustomerDeliveryInfo> update) {
         final long chatId = message.getChatId();
         final CustomerDeliveryInfo deliveryInfo = customerService.getOrCreateCustomerInfo(chatId);
         update.accept(deliveryInfo);
@@ -100,15 +81,15 @@ public class OrderHandler implements UpdateHandler {
         checkCustomerData(chatId, messagesManager, deliveryInfo);
     }
 
-    private void updateName(final Message message, final MessagesManager messagesManager) throws TelegramApiException {
+    private void updateName(final Message message, final MessagesManager messagesManager) {
         updateField(message, messagesManager, d -> d.setName(message.getText()));
     }
 
-    private void updatePhone(final Message message, final MessagesManager messagesManager) throws TelegramApiException {
+    private void updatePhone(final Message message, final MessagesManager messagesManager) {
         updateField(message, messagesManager, d -> d.setPhone(message.getText()));
     }
 
-    private void updateDeliveryAddress(final Message message, final MessagesManager messagesManager) throws TelegramApiException {
+    private void updateDeliveryAddress(final Message message, final MessagesManager messagesManager) {
         updateField(message, messagesManager, d -> d.setDeliveryAddress(message.getText()));
     }
 

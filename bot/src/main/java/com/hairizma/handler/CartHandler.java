@@ -20,7 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -62,14 +61,14 @@ public class CartHandler implements UpdateHandler {
         }
     }
 
-    private void processMessage(final Message message, final MessagesManager messagesManager) throws TelegramApiException {
+    private void processMessage(final Message message, final MessagesManager messagesManager) {
         final String messageText = message.getText();
         if(OPEN_CART_QUERY.equals(messageText)) {
             openCart(message.getChatId(), messagesManager);
         }
     }
 
-    private void processCallbackQuery(final CallbackQuery callbackQuery, final MessagesManager messagesManager) throws TelegramApiException {
+    private void processCallbackQuery(final CallbackQuery callbackQuery, final MessagesManager messagesManager) {
         final long chatId = callbackQuery.getMessage().getChatId();
         final String callbackData = callbackQuery.getData();
         int productId;
@@ -97,7 +96,7 @@ public class CartHandler implements UpdateHandler {
         }
     }
 
-    private void openCart(final long chatId, final MessagesManager messagesManager) throws TelegramApiException {
+    private void openCart(final long chatId, final MessagesManager messagesManager) {
         final Cart cart = cartService.getCart(chatId);
         if(cart.isEmpty()) {
             messagesManager.sendText(chatId, "Корзина пуста. Выберите хотябы один товар.");
@@ -154,7 +153,7 @@ public class CartHandler implements UpdateHandler {
         return markupKeyboard;
     }
 
-    private void addToCart(final long chatId, final String callbackQueryId, final int productId, final MessagesManager messagesManager) throws TelegramApiException {
+    private void addToCart(final long chatId, final String callbackQueryId, final int productId, final MessagesManager messagesManager) {
         final String message;
         if(cartService.addProduct(chatId, productId)) {
             message =  "Товар добавлен.";
@@ -166,7 +165,7 @@ public class CartHandler implements UpdateHandler {
 
     private void changeProductCountInCart(final long chatId, final String callbackQueryId, final int productId,
                                           final int messageId, final BiFunction<Long, Integer, Integer> cartFunction,
-                                          final MessagesManager messagesManager) throws TelegramApiException {
+                                          final MessagesManager messagesManager) {
         final Product product = productService.get(productId);
         final int newCount = cartFunction.apply(chatId, productId);
         final String message;
