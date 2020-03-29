@@ -12,4 +12,7 @@
     <jaxrs-client:client id="imageService" serviceClass="com.hairizma.service.ImageService"
                          address="${services.host}"/>
 
+    <jaxrs-client:client id="customerService" serviceClass="com.hairizma.service.CustomerService"
+                         address="${services.host}"/>
+
 </beans>

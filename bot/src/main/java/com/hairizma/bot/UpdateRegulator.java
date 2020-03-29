@@ -1,5 +1,6 @@
 package com.hairizma.bot;
 
+import com.hairizma.handler.HandlerManager;
 import com.hairizma.handler.UpdateHandler;
 import com.hairizma.exception.DefaultExceptionResolver;
 import com.hairizma.exception.ExceptionResolver;
@@ -18,15 +19,18 @@ public class UpdateRegulator {
     private final Collection<ExceptionResolver> exceptionResolvers;
     private final DefaultExceptionResolver defaultExceptionResolver;
     private final List<Mapper<?>> mappers;
+    private final HandlerManager handlerManager;
 
     public UpdateRegulator(final List<UpdateHandler> updateHandlers,
                            final Collection<ExceptionResolver> exceptionResolvers,
                            final DefaultExceptionResolver defaultExceptionResolver,
-                           final List<Mapper<?>> mappers) {
+                           final List<Mapper<?>> mappers,
+                           final HandlerManager handlerManager) {
         this.updateHandlers = updateHandlers;
         this.exceptionResolvers = exceptionResolvers;
-        this.defaultExceptionResolver = defaultExceptionResolver;
+        this.defaultExceptionResolver = Objects.requireNonNull(defaultExceptionResolver);
         this.mappers = mappers;
+        this.handlerManager = Objects.requireNonNull(handlerManager);
     }
 
     public void resolve(final Class<?> botIdentifier, final Update update, final MessagesManager messagesManager) {
@@ -34,14 +38,25 @@ public class UpdateRegulator {
             return;
         }
         try {
-            for (UpdateHandler updateHandler : updateHandlers) {
-                if(botIdentifier.equals(getBotIdentifier(updateHandler)) && isMappingSatisfied(update, updateHandler)) {
-                    updateHandler.handleUpdate(update, messagesManager);
-                }
+            if(update.hasMessage() && handlerManager.applyFixedConsumer(update.getMessage(), messagesManager)) {
+                return;
+            }
+            final UpdateHandler updateHandler = findUpdateHandler(botIdentifier, update);
+            if(updateHandler != null) {
+                updateHandler.handleUpdate(update, messagesManager);
             }
         } catch (final Exception e) {
             getExceptionResolver(e, update).resolve(e, update, messagesManager);
         }
+    }
+
+    private UpdateHandler findUpdateHandler(final Class<?> botIdentifier, final Update update) {
+        for (UpdateHandler updateHandler : updateHandlers) {
+            if(botIdentifier.equals(getBotIdentifier(updateHandler)) && isMappingSatisfied(update, updateHandler)) {
+                return updateHandler;
+            }
+        }
+        return null;
     }
 
     private ExceptionResolver getExceptionResolver(final Exception e, final Update update) {
