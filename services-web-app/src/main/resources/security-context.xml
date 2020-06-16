@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <sec:http entry-point-ref="http403EntryPoint">
+        <sec:custom-filter position="BASIC_AUTH_FILTER" ref="tokenAuthenticationFilter"/>
+    </sec:http>
+
+    <sec:authentication-manager alias="authenticationManager"/>
+
+    <bean id="tokenAuthenticationFilter" class="com.hairizma.security.TokenAuthenticationFilter">
+        <constructor-arg ref="tokenAuthenticationManager"/>
+    </bean>
+
+    <bean id="tokenAuthenticationManager" class="com.hairizma.security.TokenAuthenticationManager"/>
+
+    <bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+
+</beans>
